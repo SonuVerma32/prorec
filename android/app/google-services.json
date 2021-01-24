@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "461138880761",
+    "project_id": "prorecord-41a7a",
+    "storage_bucket": "prorecord-41a7a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:461138880761:android:e634e433b55af4319e5a28",
+        "android_client_info": {
+          "package_name": "com.example.prorec"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "461138880761-j70j64494v90lh1upb0tdbt54f2bfksa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.prorec",
+            "certificate_hash": "28fe34cea1da903aec08600c9770fd2d0c15498f"
+          }
+        },
+        {
+          "client_id": "461138880761-brd0s45gr9hst25ns68tcbgjep0b3nsh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmOYnvM0CPmpo1EkR_FNfyn1VzOIK3a1w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "461138880761-brd0s45gr9hst25ns68tcbgjep0b3nsh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
