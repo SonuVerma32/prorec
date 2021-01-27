@@ -5,33 +5,32 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:prorec/AddItem.dart';
-import 'package:prorec/UpdateItem.dart';
 class HomeScreen extends StatefulWidget {
+  String User1;
+  HomeScreen(this.User1);
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   List Dataa = [];
-  String User1;
 @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getaa();
-    _currentLoginCheck();
   }
 
-  _currentLoginCheck(){
-    FirebaseFirestore.instance.collection("currentLogin").get()
-        .then((QuerySnapshot querySnapshot) => {
-      querySnapshot.docs.forEach((element) {
-        setState(() {
-          User1 = element["activeUser"];
-        });
-      })
-    });
-  }
+  // _currentLoginCheck(){
+  //   FirebaseFirestore.instance.collection("currentLogin").get()
+  //       .then((QuerySnapshot querySnapshot) => {
+  //     querySnapshot.docs.forEach((element) {
+  //       setState(() {
+  //         User1 = element["activeUser"];
+  //       });
+  //     })
+  //   });
+  // }
 
 /*Future getJson() async{
   var responce = await DefaultAssetBundle.of(context).loadString('lib/listData.json');
@@ -41,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
   });
 }*/
 _logout() async{
-  CollectionReference updatedata = FirebaseFirestore.instance.collection("currentLogin");
+  /*CollectionReference updatedata = FirebaseFirestore.instance.collection("currentLogin");
   QuerySnapshot querySnapshot = await updatedata.get();
   try {
     querySnapshot.docs[0].reference.update({
@@ -50,7 +49,7 @@ _logout() async{
     });
   } on Exception catch (e) {
 
-  }
+  }*/
   SystemChannels.platform.invokeMethod('SystemNavigator.pop');
 }
 getaa(){
@@ -58,7 +57,7 @@ getaa(){
     Dataa.clear();
   }
   try{
-    FirebaseFirestore.instance.collection(User1).get()
+    FirebaseFirestore.instance.collection(widget.User1).get()
         .then((QuerySnapshot querySnapshot) => {
       querySnapshot.docs.forEach((element) {
         setState(() {
@@ -76,20 +75,24 @@ getaa(){
     print(e.toString());
   }
 }
-_showModelsheet(String id) async{
+_showModelsheet(String id,String ua) async{
   var Category,Brand,Model,LandingPrice,MRP,MinimumPrice,ProfitablePrice,identity;
-  await FirebaseFirestore.instance.collection(User1).doc(id).get().then((DocumentSnapshot snapshot) {
-    setState(() {
-      Category = snapshot.data()["Category"];
-      Model = snapshot.data()["Brand"];
-      Brand = snapshot.data()["Model"];
-      LandingPrice = snapshot.data()["LandingPrice"];
-      MRP = snapshot.data()["MRP"];
-      MinimumPrice = snapshot.data()["MinimumPrice"];
-      ProfitablePrice = snapshot.data()["ProfitablePrice"];
-      identity = id;
+  try{
+    await FirebaseFirestore.instance.collection(widget.User1).doc(id).get().then((DocumentSnapshot snapshot) {
+      setState(() {
+        Category = snapshot.data()["Category"];
+        Model = snapshot.data()["Brand"];
+        Brand = snapshot.data()["Model"];
+        LandingPrice = snapshot.data()["LandingPrice"];
+        MRP = snapshot.data()["MRP"];
+        MinimumPrice = snapshot.data()["MinimumPrice"];
+        ProfitablePrice = snapshot.data()["ProfitablePrice"];
+        identity = id;
+      });
     });
-  });
+  }catch(e){
+
+  }
     showModalBottomSheet(context: context,backgroundColor: Colors.transparent,elevation: 90.0, builder: (builder){
 
       return new Container(
@@ -127,14 +130,10 @@ _showModelsheet(String id) async{
             new Padding(padding: const EdgeInsets.only(top: 50)),
             new Row(
               children: <Widget>[
-
-                new Padding(padding: const EdgeInsets.only(left: 10.0)),
-                new Expanded(child: new MaterialButton(color: Colors.redAccent,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),child: Icon(Icons.edit,color: Colors.white,), onPressed: (){Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context)=>updateItem()));}),
-                ),
                 new Padding(padding: const EdgeInsets.only(left: 10.0)),
                 new Expanded(
                   child: new MaterialButton(color: Colors.redAccent,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),child: Icon(Icons.delete,color: Colors.white,), onPressed: (){
-                    FirebaseFirestore.instance.collection("data").doc(identity).delete();
+                    FirebaseFirestore.instance.collection(widget.User1).doc(identity).delete();
                   }),
                 ),
                 new Padding(padding: const EdgeInsets.all(10.0)),
@@ -160,7 +159,7 @@ _showModelsheet(String id) async{
             new IconButton(icon: new Icon(Icons.restore), onPressed: getaa),
             new Padding(padding: const EdgeInsets.only(right: 10.0)),
             new IconButton(icon: new Icon(Icons.edit), onPressed: (){
-              Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context)=>addItem()));
+              Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context)=>addItem(widget.User1)));
             }),
             new Padding(padding: const EdgeInsets.only(right: 10.0)),
             new IconButton(icon: new Icon(Icons.exit_to_app), onPressed: _logout),
@@ -184,12 +183,12 @@ _showModelsheet(String id) async{
                 children: <Widget>[
                   new SingleChildScrollView(
                       child: new DataTable(
-                        //columnSpacing: MediaQuery.of(context).size.width * 0.05,
+                        columnSpacing: MediaQuery.of(context).size.width * 0.12,
                         columns: <DataColumn>[
-                          DataColumn(label: Text("Category",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12,color: Colors.black),)),
-                          DataColumn(label: Text("Brand",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12,color: Colors.black),)),
-                          DataColumn(label: Text("Model",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12,color: Colors.black),)),
-                          DataColumn(label: Text("More",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12,color: Colors.black),)),
+                          DataColumn(label: Text("Category",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),)),
+                          DataColumn(label: Text("Brand",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),)),
+                          DataColumn(label: Text("Model",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),)),
+                          DataColumn(label: Text("More",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),)),
                         ],
                         rows: Dataa.map((val) => DataRow(
                           cells: [
@@ -201,7 +200,7 @@ _showModelsheet(String id) async{
                               String id =val["id"];
                               //FirebaseFirestore.instance.collection("data").doc(a).delete();
                               //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context)=>expandDetails(a)));
-                              _showModelsheet(id);
+                              _showModelsheet(id,widget.User1);
                             },icon: Icon(Icons.more_horiz),))
                           ],
                         ),

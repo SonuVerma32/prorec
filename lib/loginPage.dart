@@ -11,46 +11,52 @@ class _loginPageState extends State<loginPage> {
 
   String _email,_pass;
   bool checkBoxValue = true;
-
+  List Dataa = [];
   TextEditingController userName = new TextEditingController();
   TextEditingController passWord = new TextEditingController();
   final formkey = new GlobalKey<FormState>();
 
   _logIn(){
-    FirebaseFirestore.instance.collection("loginCredentials").get()
-        .then((QuerySnapshot querySnapshot) => {
-          querySnapshot.docs.forEach((element) {
-            if(element["Uid"]==userName.text&&element["Password"]==passWord.text){
-              Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context)=>new HomeScreen()));
-            }else{
-              userName.clear();
-              passWord.clear();
-            }
-          })
-    });
+    try{
+      FirebaseFirestore.instance.collection("loginCredentials").get()
+          .then((QuerySnapshot querySnapshot) => {
+        querySnapshot.docs.forEach((element) {
+          if(element["Uid"]==userName.text&&element["Password"]==passWord.text){
+            Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context)=>new HomeScreen(_email)));
+          }else{
+            userName.clear();
+            passWord.clear();
+          }
+        })
+      });
+    }catch(e){
+
+    }
   }
   _submit()async{
     final form = formkey.currentState;
-    String uName = userName.text;
 
     if (form.validate()){
       form.save();
-      if(checkBoxValue == true){
+      /*if(checkBoxValue == true){
         CollectionReference updatedata = FirebaseFirestore.instance.collection("currentLogin");
         QuerySnapshot querySnapshot = await updatedata.get();
         try {
           querySnapshot.docs[0].reference.update({
             "loginStatus": true,
             "activeUser":"$uName"
+
           });
+          _logIn();
         } on Exception catch (e) {
           print(e);
         }
+
+      }*/
+      /*else{
         _logIn();
-      }
-      else{
-        _logIn();
-      }
+      }*/
+      _logIn();
     }
   }
   @override

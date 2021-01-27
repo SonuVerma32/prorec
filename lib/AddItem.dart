@@ -2,12 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 class addItem extends StatefulWidget {
+  String User1;
+  addItem(this.User1);
   @override
   _addItemState createState() => _addItemState();
 }
 
 class _addItemState extends State<addItem> {
   Map dataa;
+  String uu;
   String productCategory,productBrand, productModel, landingPrice, mrp, minimumPrice, profitPrice;
   TextEditingController tf1 = new TextEditingController();
   TextEditingController tf2 = new TextEditingController();
@@ -28,16 +31,7 @@ _reset(){
   tf7.clear();
 }
 
-  _currentLoginCheck(){
-    FirebaseFirestore.instance.collection("currentLogin").get()
-        .then((QuerySnapshot querySnapshot) => {
-      querySnapshot.docs.forEach((element) {
-        setState(() {
-          User1 = element["activeUser"];
-        });
-      })
-    });
-  }
+
 
   _adddata()async{
   /*
@@ -54,7 +48,7 @@ _reset(){
     Map<String,dynamic> demoData = {"Category":"$productCategory",
       "Brand":"$productBrand","Model":"$productModel","LandingPrice":"$landingPrice",
       "MRP":"$mrp","MinimumPrice":"$minimumPrice","ProfitablePrice":"$profitPrice"};
-    FirebaseFirestore.instance.collection(User1).add(demoData);
+    FirebaseFirestore.instance.collection(uu).add(demoData);
     _reset();
   }
 
@@ -62,7 +56,7 @@ _reset(){
   void initState() {
     // TODO: implement initState
     super.initState();
-    _currentLoginCheck();
+    uu= widget.User1;
   }
   @override
   Widget build(BuildContext context) {
