@@ -21,6 +21,7 @@ class _myappState extends State<myapp> {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
+      debugShowCheckedModeBanner: false,
 home: new loginPage(),
     );
   }

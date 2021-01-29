@@ -18,41 +18,14 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getaa();
+    _getaa();
   }
 
-  // _currentLoginCheck(){
-  //   FirebaseFirestore.instance.collection("currentLogin").get()
-  //       .then((QuerySnapshot querySnapshot) => {
-  //     querySnapshot.docs.forEach((element) {
-  //       setState(() {
-  //         User1 = element["activeUser"];
-  //       });
-  //     })
-  //   });
-  // }
-
-/*Future getJson() async{
-  var responce = await DefaultAssetBundle.of(context).loadString('lib/listData.json');
-  var convertdatatojson = json.decode(responce);
-  setState(() {
-    Dataa = convertdatatojson["Employee"];
-  });
-}*/
-_logout() async{
-  /*CollectionReference updatedata = FirebaseFirestore.instance.collection("currentLogin");
-  QuerySnapshot querySnapshot = await updatedata.get();
-  try {
-    querySnapshot.docs[0].reference.update({
-      "loginStatus": false,
-      "activeUser":""
-    });
-  } on Exception catch (e) {
-
-  }*/
+void _logout() async{
   SystemChannels.platform.invokeMethod('SystemNavigator.pop');
 }
-getaa(){
+
+void _getaa(){
   if(Dataa!=null){
     Dataa.clear();
   }
@@ -72,10 +45,18 @@ getaa(){
       })
     });
   }catch(e){
-    print(e.toString());
+    setState(() {
+      Dataa.add({
+        "Category": "",
+        "Brand": "",
+        "Model": "",
+        "id": ""
+      },);
+    });
   }
 }
-_showModelsheet(String id,String ua) async{
+
+void _showModelsheet(String id,String ua) async{
   var Category,Brand,Model,LandingPrice,MRP,MinimumPrice,ProfitablePrice,identity;
   try{
     await FirebaseFirestore.instance.collection(widget.User1).doc(id).get().then((DocumentSnapshot snapshot) {
@@ -100,7 +81,7 @@ _showModelsheet(String id,String ua) async{
         height: MediaQuery.of(context).size.height * 0.4,
         decoration: new BoxDecoration(
           borderRadius: new BorderRadius.circular(20.0),
-          color: Colors.white70,
+          color: Colors.grey,
         ),
         child: new Column(
           children: <Widget>[
@@ -132,8 +113,9 @@ _showModelsheet(String id,String ua) async{
               children: <Widget>[
                 new Padding(padding: const EdgeInsets.only(left: 10.0)),
                 new Expanded(
-                  child: new MaterialButton(color: Colors.redAccent,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),child: Icon(Icons.delete,color: Colors.white,), onPressed: (){
+                  child: new FloatingActionButton(backgroundColor: Colors.redAccent,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),child: Icon(Icons.delete,color: Colors.white,), onPressed: (){
                     FirebaseFirestore.instance.collection(widget.User1).doc(identity).delete();
+                    _getaa();
                   }),
                 ),
                 new Padding(padding: const EdgeInsets.all(10.0)),
@@ -144,6 +126,7 @@ _showModelsheet(String id,String ua) async{
       );
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
@@ -151,17 +134,11 @@ _showModelsheet(String id,String ua) async{
       debugShowCheckedModeBanner: false,
       home: new Scaffold(
         appBar: new AppBar(
-          title: new Text("Product Records"),
-          elevation: defaultTargetPlatform == TargetPlatform.android?5.0:0.0,
+          title: new Text(widget.User1),centerTitle: true,
+          elevation: defaultTargetPlatform == TargetPlatform.android?5.0:2.0,
           backgroundColor: Colors.redAccent,
           actions: <Widget>[
-            new Padding(padding: const EdgeInsets.only(right: 10.0)),
-            new IconButton(icon: new Icon(Icons.restore), onPressed: getaa),
-            new Padding(padding: const EdgeInsets.only(right: 10.0)),
-            new IconButton(icon: new Icon(Icons.edit), onPressed: (){
-              Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context)=>addItem(widget.User1)));
-            }),
-            new Padding(padding: const EdgeInsets.only(right: 10.0)),
+            new IconButton(icon: new Icon(Icons.refresh), onPressed: _getaa),
             new IconButton(icon: new Icon(Icons.exit_to_app), onPressed: _logout),
           ],
         ),
@@ -172,42 +149,61 @@ _showModelsheet(String id,String ua) async{
         * */
         body: new Column(
           children: <Widget>[
-            new Container(
-              margin: const EdgeInsets.only(top: 2),
-              // height: MediaQuery.of(context).size.height * 0.805,
-              // width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),color: Colors.white70),
-              child: new Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  new SingleChildScrollView(
-                      child: new DataTable(
-                        columnSpacing: MediaQuery.of(context).size.width * 0.12,
-                        columns: <DataColumn>[
-                          DataColumn(label: Text("Category",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),)),
-                          DataColumn(label: Text("Brand",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),)),
-                          DataColumn(label: Text("Model",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),)),
-                          DataColumn(label: Text("More",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),)),
-                        ],
-                        rows: Dataa.map((val) => DataRow(
-                          cells: [
-                            DataCell(Text(val["Category"].toString())),
-                            DataCell(Text(val["Brand"].toString())),
-                            DataCell(Text(val["Model"].toString())),
-                            //DataCell(Text(val["id"].toString())),
-                            DataCell(new IconButton(onPressed: (){
-                              String id =val["id"];
-                              //FirebaseFirestore.instance.collection("data").doc(a).delete();
-                              //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context)=>expandDetails(a)));
-                              _showModelsheet(id,widget.User1);
-                            },icon: Icon(Icons.more_horiz),))
-                          ],
-                        ),
-                        ).toList(),
-                      )
-                  ),
+            new Expanded(
+              flex: 10,
+              child: new Container(
+                margin: const EdgeInsets.only(top: 2),
+                height: MediaQuery.of(context).size.height * 0.780,
+                // width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),color: Colors.white70),
+                child: new SingleChildScrollView(scrollDirection: Axis.horizontal,
+                  child: new Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      new SingleChildScrollView(
+                          child: new DataTable(
+                            columnSpacing: MediaQuery.of(context).size.width * 0.12,
+                            columns: <DataColumn>[
+                              DataColumn(label: Text("Category",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),)),
+                              DataColumn(label: Text("Brand",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),)),
+                              DataColumn(label: Text("Model",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),)),
+                              DataColumn(label: Text("More",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),)),
+                            ],
+                            rows: Dataa.map((val) => DataRow(
+                              cells: [
+                                DataCell(Text(val["Category"].toString())),
+                                DataCell(Text(val["Brand"].toString())),
+                                DataCell(Text(val["Model"].toString())),
+                                //DataCell(Text(val["id"].toString())),
+                                DataCell(new IconButton(onPressed: (){
+                                  String id =val["id"];
+                                  //FirebaseFirestore.instance.collection("data").doc(a).delete();
+                                  //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context)=>expandDetails(a)));
+                                  _showModelsheet(id,widget.User1);
+                                },icon: Icon(Icons.more_horiz,),))
+                              ],
+                            ),
+                            ).toList(),
+                          )
+                      ),
 
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            new Expanded(
+              flex: 1,
+              child: new Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  new FloatingActionButton(
+                    onPressed: (){
+                      Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context)=>addItem(widget.User1)));
+                    },
+                    child: Icon(Icons.add),
+                  ),
                 ],
               ),
             ),

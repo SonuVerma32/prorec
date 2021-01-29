@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 class addItem extends StatefulWidget {
   String User1;
@@ -61,10 +62,11 @@ _reset(){
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: "Add Item",
+      title: "Add Item",debugShowCheckedModeBanner: false,
       home: new Scaffold(
         appBar: new AppBar(
-          title: new Text("Add Item"),
+          title: new Text("Add Item"),centerTitle: true,
+          elevation: defaultTargetPlatform == TargetPlatform.android?5.0:2.0,
           backgroundColor: Colors.redAccent,
           leading: IconButton(icon: Icon(Icons.arrow_back,color: Colors.white,),
               onPressed: () => Navigator.of(context).pop()),
@@ -107,7 +109,7 @@ _reset(){
                 alignment: Alignment.center,
                 padding: const EdgeInsets.only(left: 5.0,right: 5.0),
                 decoration: new BoxDecoration(borderRadius: BorderRadius.circular(15.0),color: Colors.white70),
-                child: new TextFormField(decoration: InputDecoration(labelText: "Landing Price",border: new OutlineInputBorder(borderRadius: BorderRadius.circular(10.0),gapPadding: 10.0)),onChanged: (val)=>landingPrice = val,controller: tf4,),
+                child: new TextFormField(keyboardType: TextInputType.number,decoration: InputDecoration(labelText: "Landing Price",border: new OutlineInputBorder(borderRadius: BorderRadius.circular(10.0),gapPadding: 10.0)),onChanged: (val)=>landingPrice = val,controller: tf4,),
               ),
             ),
             new Expanded(
@@ -117,7 +119,7 @@ _reset(){
                 alignment: Alignment.center,
                 padding: const EdgeInsets.only(left: 5.0,right: 5.0),
                 decoration: new BoxDecoration(borderRadius: BorderRadius.circular(15.0),color: Colors.white70),
-                child: new TextFormField(decoration: InputDecoration(labelText: "MRP Price",border: new OutlineInputBorder(borderRadius: BorderRadius.circular(10.0),gapPadding: 10.0)),onChanged: (val)=>mrp = val,controller: tf5,),
+                child: new TextFormField(keyboardType: TextInputType.number,decoration: InputDecoration(labelText: "MRP Price",border: new OutlineInputBorder(borderRadius: BorderRadius.circular(10.0),gapPadding: 10.0)),onChanged: (val)=>mrp = val,controller: tf5,),
               ),
             ),
             new Expanded(
@@ -127,7 +129,7 @@ _reset(){
                 alignment: Alignment.center,
                 padding: const EdgeInsets.only(left: 5.0,right: 5.0),
                 decoration: new BoxDecoration(borderRadius: BorderRadius.circular(15.0),color: Colors.white70),
-                child: new TextFormField(decoration: InputDecoration(labelText: "Minimum Price",border: new OutlineInputBorder(borderRadius: BorderRadius.circular(10.0),gapPadding: 10.0)),onChanged: (val)=>minimumPrice = val,controller: tf6,),
+                child: new TextFormField(keyboardType: TextInputType.number,decoration: InputDecoration(labelText: "Minimum Price",border: new OutlineInputBorder(borderRadius: BorderRadius.circular(10.0),gapPadding: 10.0)),onChanged: (val)=>minimumPrice = val,controller: tf6,),
               ),
             ),
             new Expanded(
@@ -137,7 +139,7 @@ _reset(){
                 alignment: Alignment.center,
                 padding: const EdgeInsets.only(left: 5.0,right: 5.0),
                 decoration: new BoxDecoration(borderRadius: BorderRadius.circular(15.0),color: Colors.white70),
-                child: new TextFormField(decoration: InputDecoration(labelText: "Profitable Price",border: new OutlineInputBorder(borderRadius: BorderRadius.circular(10.0),gapPadding: 10.0)),onChanged: (val)=>profitPrice = val,controller: tf7,),
+                child: new TextFormField(keyboardType: TextInputType.number,decoration: InputDecoration(labelText: "Profitable Price",border: new OutlineInputBorder(borderRadius: BorderRadius.circular(10.0),gapPadding: 10.0)),onChanged: (val)=>profitPrice = val,controller: tf7,),
               ),
             ),
             new MaterialButton(

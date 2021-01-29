@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:prorec/loginPage.dart';
 class signUpPage extends StatefulWidget {
@@ -42,7 +43,8 @@ class _signUpPageState extends State<signUpPage> {
       debugShowCheckedModeBanner: false,
       home: new Scaffold(
         appBar: new AppBar(
-          title: new Text("Create Account"),
+          title: new Text("Create Account"),centerTitle: true,
+          elevation: defaultTargetPlatform == TargetPlatform.android?5.0:2.0,
           backgroundColor: Colors.redAccent,
           leading: IconButton(icon: Icon(Icons.arrow_back,color: Colors.white,),
               onPressed: () => Navigator.of(context).pop()),
@@ -61,7 +63,7 @@ class _signUpPageState extends State<signUpPage> {
                   child: new TextFormField(
                     controller: userName,
                     decoration: new InputDecoration(labelText: "Username/Email",hintText: "User@email.com",border: new OutlineInputBorder(borderRadius: BorderRadius.circular(10.0),gapPadding: 10.0),suffixIcon: Icon(Icons.email)),
-                    validator: (val)=> val.contains("@")?null:"Invalid Email",
+                    validator: (val)=> val.contains("@")||val.contains("!")?null:"Invalid Email",
                   ),
                 ),
                 new Padding(padding: const EdgeInsets.only(top: 20.0)),
@@ -70,7 +72,7 @@ class _signUpPageState extends State<signUpPage> {
                   child: new TextFormField(
                     controller: passWord,
                     decoration: new InputDecoration(labelText: "Password",hintText: "********",border: new OutlineInputBorder(borderRadius: BorderRadius.circular(10.0),gapPadding: 10.0),suffixIcon: Icon(Icons.lock)),
-                    validator: (val)=>val.length>6?null:"Re-Check Password",
+                    validator: (val)=>val.length>=6?null:"Re-Check Password",
                     onSaved: (val) => _pass = val,
                     obscureText: true,
                   ),
