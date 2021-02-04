@@ -32,8 +32,6 @@ _reset(){
   tf7.clear();
 }
 
-
-
   _adddata()async{
   /*
   * this function is to add data into firebase 

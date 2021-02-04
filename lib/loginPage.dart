@@ -39,24 +39,6 @@ class _loginPageState extends State<loginPage> {
 
     if (form.validate()){
       form.save();
-      /*if(checkBoxValue == true){
-        CollectionReference updatedata = FirebaseFirestore.instance.collection("currentLogin");
-        QuerySnapshot querySnapshot = await updatedata.get();
-        try {
-          querySnapshot.docs[0].reference.update({
-            "loginStatus": true,
-            "activeUser":"$uName"
-
-          });
-          _logIn();
-        } on Exception catch (e) {
-          print(e);
-        }
-
-      }*/
-      /*else{
-        _logIn();
-      }*/
       _logIn();
     }
   }
