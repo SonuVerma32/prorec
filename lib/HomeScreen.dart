@@ -115,6 +115,7 @@ void _showModelsheet(String id,String ua) async{
                   child: new FloatingActionButton(backgroundColor: Colors.redAccent,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),child: Icon(Icons.delete,color: Colors.white,), onPressed: (){
                     FirebaseFirestore.instance.collection(widget.User1).doc(identity).delete();
                     _getaa();
+                    Navigator.pop(context);
                   }),
                 ),
                 new Padding(padding: const EdgeInsets.all(10.0)),
