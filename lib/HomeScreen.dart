@@ -13,6 +13,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List Dataa = [];
+  var refreshKey = GlobalKey<RefreshIndicatorState>();
 @override
   void initState() {
     // TODO: implement initState
@@ -24,13 +25,13 @@ void _logout() async{
   SystemChannels.platform.invokeMethod('SystemNavigator.pop');
 }
 
-void _getaa(){
-  if(Dataa!=null){
-    Dataa.clear();
-  }
+Future <Null> _getaa()async{
+  refreshKey.currentState?.show();
+  await Future.delayed(Duration(seconds: 2));
   try{
     FirebaseFirestore.instance.collection(widget.User1).get()
         .then((QuerySnapshot querySnapshot) => {
+    Dataa.clear(),
       querySnapshot.docs.forEach((element) {
         setState(() {
           Dataa.add({
@@ -44,15 +45,9 @@ void _getaa(){
       })
     });
   }catch(e){
-    setState(() {
-      Dataa.add({
-        "Category": "",
-        "Brand": "",
-        "Model": "",
-        "id": ""
-      },);
-    });
+
   }
+  return null;
 }
 
 void _showModelsheet(String id,String ua) async{
@@ -157,38 +152,42 @@ void _showModelsheet(String id,String ua) async{
                 // width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),color: Colors.white70),
                 child: new SingleChildScrollView(scrollDirection: Axis.horizontal,
-                  child: new Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      new SingleChildScrollView(
-                          child: new DataTable(
-                            columnSpacing: MediaQuery.of(context).size.width * 0.12,
-                            columns: <DataColumn>[
-                              DataColumn(label: Text("Category",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),)),
-                              DataColumn(label: Text("Brand",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),)),
-                              DataColumn(label: Text("Model",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),)),
-                              DataColumn(label: Text("More",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),)),
-                            ],
-                            rows: Dataa.map((val) => DataRow(
-                              cells: [
-                                DataCell(Text(val["Category"].toString())),
-                                DataCell(Text(val["Brand"].toString())),
-                                DataCell(Text(val["Model"].toString())),
-                                //DataCell(Text(val["id"].toString())),
-                                DataCell(new IconButton(onPressed: (){
-                                  String id =val["id"];
-                                  //FirebaseFirestore.instance.collection("data").doc(a).delete();
-                                  //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context)=>expandDetails(a)));
-                                  _showModelsheet(id,widget.User1);
-                                },icon: Icon(Icons.more_horiz,),))
+                  child: new RefreshIndicator(
+                    key: refreshKey,
+                    child: new Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        new SingleChildScrollView(
+                            child: Dataa.isEmpty?new CircularProgressIndicator():
+                            new DataTable(
+                              columnSpacing: MediaQuery.of(context).size.width * 0.12,
+                              columns: <DataColumn>[
+                                DataColumn(label: Text("Category",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),)),
+                                DataColumn(label: Text("Brand",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),)),
+                                DataColumn(label: Text("Model",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),)),
+                                DataColumn(label: Text("More",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),)),
                               ],
+                              rows: Dataa.map((val) => DataRow(
+                                cells: [
+                                  DataCell(Text(val["Category"].toString())),
+                                  DataCell(Text(val["Brand"].toString())),
+                                  DataCell(Text(val["Model"].toString())),
+                                  //DataCell(Text(val["id"].toString())),
+                                  DataCell(new IconButton(onPressed: (){
+                                    String id =val["id"];
+                                    //FirebaseFirestore.instance.collection("data").doc(a).delete();
+                                    //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context)=>expandDetails(a)));
+                                    _showModelsheet(id,widget.User1);
+                                  },icon: Icon(Icons.more_horiz,),))
+                                ],
+                              ),
+                              ).toList(),
                             ),
-                            ).toList(),
-                          )
-                      ),
+                        ),
 
-                    ],
+                      ],
+                    ), onRefresh: _getaa,
                   ),
                 ),
               ),
